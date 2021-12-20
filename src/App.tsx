@@ -4,25 +4,27 @@ import './App.css';
 import TextField from './TextField.tsx';
 import Todo from './Todo.tsx'
 
-const ACTIONS = {
+export const ACTIONS = {
   ADD_TODO: 'add-todo',
   TOGGLE_TODO:'toggle-todo',
   DELETE_TODO: 'delete-todo'
 }
 
 function reducer(todos, action) {
-
+console.log(action)
   switch(action.type) {
     case ACTIONS.ADD_TODO:
       return [...todos, newTodo(action.payload.name)]
     case ACTIONS.TOGGLE_TODO:
       return todos.map(todo => {
         if(todo.id === action.payload.id) {
-          todo.complete = !todo.complete;
+           return {...todo, complete:!todo.complete };
+        } else {
+          return todo;
         }
-        return todo;
       })
     case ACTIONS.DELETE_TODO:
+    
       return todos.filter(todo => todo.id !== action.payload.id)
     default:
       return todos;
@@ -41,8 +43,7 @@ function App() {
   const renderCount = useRef(0);
   const inputRef = useRef();
   const [todos, dispatch] = useReducer(reducer,[]);
-  
-  
+
   useEffect(() => {
     renderCount.current = ++renderCount.current;
   })
@@ -70,7 +71,7 @@ function App() {
       </form>
       {
         todos.map((todo) => {
-          return <Todo todo={todo}></Todo>
+          return <Todo key={todo.id} todo={todo} dispatch={dispatch}></Todo>
         })
       }
     </div>
